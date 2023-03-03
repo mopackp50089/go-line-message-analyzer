@@ -73,7 +73,9 @@ func main() {
 
 		cacheLambda = cache.NewCache(cache.InitBigCache(rootCtx))
 
-		app := app.NewApplication(rootCtx, cacheLambda, lineClientLambda)
+		openApiKey := os.Getenv("OPEN_API_KEY")
+		app := app.NewApplication(rootCtx, cacheLambda, lineClientLambda, openApiKey)
+
 		ginRouter := server.InitRouter(rootCtx, app)
 		ginLambda = ginadapter.New(ginRouter)
 

@@ -38,7 +38,9 @@ func StartServer() {
 	}
 	log.Println(os.Getenv("CHANNEL_SECRET") + " LINE40")
 
-	app := app.NewApplication(rootCtx, cache, lineClient)
+	// chatgpt
+	openApiKey := os.Getenv("OPEN_API_KEY")
+	app := app.NewApplication(rootCtx, cache, lineClient, openApiKey)
 
 	ginRouter := InitRouter(rootCtx, app)
 	// Run server
