@@ -6,10 +6,13 @@ require (
 	github.com/aws/aws-lambda-go v1.37.0
 	github.com/awslabs/aws-lambda-go-api-proxy v0.14.0
 	github.com/gin-gonic/gin v1.8.2
+	github.com/golang/protobuf v1.5.2
 	github.com/joho/godotenv v1.5.1
+	github.com/sashabaranov/go-gpt3 v1.2.1
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.1
+	google.golang.org/grpc v1.52.0
 )
 
 require (
@@ -18,10 +21,10 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/sashabaranov/go-gpt3 v1.2.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/vcaesar/cedar v0.20.1 // indirect
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
+	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef // indirect
 )
 
 require (

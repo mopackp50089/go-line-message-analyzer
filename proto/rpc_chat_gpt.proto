@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/onepiece010938/go-line-message-analyzer/pb";
+
+message ChatGptRequest{
+    string role = 1;
+    string content = 2;
+
+}
+
+message ChatGptReply{
+    string response = 1;
+}
