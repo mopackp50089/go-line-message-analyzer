@@ -15,8 +15,11 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/onepiece010938/go-line-message-analyzer/internal/adapter/cache"
+	gRPCChatgptClient "github.com/onepiece010938/go-line-message-analyzer/internal/adapter/grpc/chatgpt/client"
 	"github.com/onepiece010938/go-line-message-analyzer/internal/app"
 	"github.com/onepiece010938/go-line-message-analyzer/internal/router"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 var PORT int = 6666
@@ -40,7 +43,15 @@ func StartServer() {
 
 	// chatgpt
 	openApiKey := os.Getenv("OPEN_API_KEY")
-	app := app.NewApplication(rootCtx, cache, lineClient, openApiKey)
+	// chatgpt client
+	addr := os.Getenv("OPENAI_GRPC_SERVER_ADDR")
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("fail to connect: %v\n", err)
+	}
+	defer conn.Close()
+	openaiGrpcClient := gRPCChatgptClient.NewOpenaiGrpcClient(conn)
+	app := app.NewApplication(rootCtx, cache, lineClient, openApiKey, openaiGrpcClient)
 
 	ginRouter := InitRouter(rootCtx, app)
 	// Run server

@@ -8,13 +8,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/linebot"
+	gRPCChatgptClient "github.com/onepiece010938/go-line-message-analyzer/internal/adapter/grpc/chatgpt/client"
 	"github.com/onepiece010938/go-line-message-analyzer/internal/app"
 	"github.com/onepiece010938/go-line-message-analyzer/internal/app/service/chatgpt"
 )
 
 type ChatGPTLineHandler struct {
-	bot     *linebot.Client
-	chatgpt *chatgpt.ChatGPTService
+	bot              *linebot.Client
+	chatgpt          *chatgpt.ChatGPTService
+	openaigrpcclient *gRPCChatgptClient.OpenaiGrpcClient
 }
 
 func ChatGPT(app *app.Application) gin.HandlerFunc {
@@ -31,7 +33,7 @@ func ChatGPT(app *app.Application) gin.HandlerFunc {
 			}
 			return
 		}
-		ChatGPTLineHandler := ChatGPTLineHandler{bot: app.LineBotClient, chatgpt: app.ChatGPTService}
+		ChatGPTLineHandler := ChatGPTLineHandler{bot: app.LineBotClient, chatgpt: app.ChatGPTService, openaigrpcclient: app.OpenaiGrpcClient}
 		for _, event := range events {
 			log.Printf("Got event %v", event)
 			switch event.Type {
@@ -91,12 +93,21 @@ func (c *ChatGPTLineHandler) handleText(ctx context.Context, app *app.Applicatio
 		return c.replyText(replyToken, test)
 
 	default:
+		// --- GO version: chatGPT Model: gogpt.GPT3TextDavinci003 ---
+		// log.Printf("Echo message to %s: %s", replyToken, message.Text)
+		// log.Println("Call GO ChatGPT")
+		// completionRequestParm := chatgpt.CompletionRequestParm{
+		// 	Prompt: message.Text,
+		// }
+		// resp, err := c.chatgpt.CompletionRequest(ctx, completionRequestParm)
+		// if err != nil {
+		// 	return c.replyText(replyToken, err.Error())
+		// }
+
+		// --- PYTHON latest version: chatGPT Model: gpt-3.5-turbo
 		log.Printf("Echo message to %s: %s", replyToken, message.Text)
-		log.Println("Call ChatGPT")
-		completionRequestParm := chatgpt.CompletionRequestParm{
-			Prompt: message.Text,
-		}
-		resp, err := c.chatgpt.CompletionRequest(ctx, completionRequestParm)
+		log.Println("Call PYTHON ChatGPT")
+		err, resp := c.openaigrpcclient.Chatgpt(message.Text)
 		if err != nil {
 			return c.replyText(replyToken, err.Error())
 		}

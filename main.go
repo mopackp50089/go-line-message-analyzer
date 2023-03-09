@@ -37,10 +37,10 @@ import (
 	"github.com/onepiece010938/go-line-message-analyzer/cmd/server"
 	"github.com/onepiece010938/go-line-message-analyzer/internal/adapter/cache"
 
-	// gRPCChatgptClient "github.com/onepiece010938/go-line-message-analyzer/internal/adapter/grpc/chatgpt/client"
+	gRPCChatgptClient "github.com/onepiece010938/go-line-message-analyzer/internal/adapter/grpc/chatgpt/client"
 	"github.com/onepiece010938/go-line-message-analyzer/internal/app"
-	// "google.golang.org/grpc"
-	// "google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 var (
@@ -79,14 +79,14 @@ func main() {
 		cacheLambda = cache.NewCache(cache.InitBigCache(rootCtx))
 
 		// chatgpt client
-		// conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-		// if err != nil {
-		// 	log.Fatalf("fail to connect: %v\n", err)
-		// }
-		// defer conn.Close()
-		// openaiGrpcClient := gRPCChatgptClient.NewOpenaiGrpcClient(conn)
+		conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		if err != nil {
+			log.Fatalf("fail to connect: %v\n", err)
+		}
+		defer conn.Close()
+		openaiGrpcClient := gRPCChatgptClient.NewOpenaiGrpcClient(conn)
 		openApiKey := os.Getenv("OPEN_API_KEY")
-		app := app.NewApplication(rootCtx, cacheLambda, lineClientLambda, openApiKey)
+		app := app.NewApplication(rootCtx, cacheLambda, lineClientLambda, openApiKey, openaiGrpcClient)
 
 		ginRouter := server.InitRouter(rootCtx, app)
 		ginLambda = ginadapter.New(ginRouter)
