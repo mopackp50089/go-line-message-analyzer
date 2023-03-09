@@ -4,7 +4,7 @@
 // - protoc             v3.6.1
 // source: service_open_ai.proto
 
-package pb
+package chatgpt
 
 import (
 	context "context"
@@ -35,7 +35,7 @@ func NewOpenAiClient(cc grpc.ClientConnInterface) OpenAiClient {
 
 func (c *openAiClient) ChatGpt(ctx context.Context, in *ChatGptRequest, opts ...grpc.CallOption) (*ChatGptReply, error) {
 	out := new(ChatGptReply)
-	err := c.cc.Invoke(ctx, "/pb.OpenAi/ChatGpt", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/chatgpt.OpenAi/ChatGpt", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func _OpenAi_ChatGpt_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pb.OpenAi/ChatGpt",
+		FullMethod: "/chatgpt.OpenAi/ChatGpt",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OpenAiServer).ChatGpt(ctx, req.(*ChatGptRequest))
@@ -92,7 +92,7 @@ func _OpenAi_ChatGpt_Handler(srv interface{}, ctx context.Context, dec func(inte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var OpenAi_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.OpenAi",
+	ServiceName: "chatgpt.OpenAi",
 	HandlerType: (*OpenAiServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

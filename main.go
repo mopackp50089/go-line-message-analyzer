@@ -36,7 +36,11 @@ import (
 	"github.com/onepiece010938/go-line-message-analyzer/cmd"
 	"github.com/onepiece010938/go-line-message-analyzer/cmd/server"
 	"github.com/onepiece010938/go-line-message-analyzer/internal/adapter/cache"
+
+	// gRPCChatgptClient "github.com/onepiece010938/go-line-message-analyzer/internal/adapter/grpc/chatgpt/client"
 	"github.com/onepiece010938/go-line-message-analyzer/internal/app"
+	// "google.golang.org/grpc"
+	// "google.golang.org/grpc/credentials/insecure"
 )
 
 var (
@@ -44,6 +48,7 @@ var (
 	cacheLambda      *cache.Cache
 	lineClientLambda *linebot.Client
 	ssmsvc           *SSM
+	addr             string = "192.168.2.39:7727"
 )
 
 func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -73,6 +78,13 @@ func main() {
 
 		cacheLambda = cache.NewCache(cache.InitBigCache(rootCtx))
 
+		// chatgpt client
+		// conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		// if err != nil {
+		// 	log.Fatalf("fail to connect: %v\n", err)
+		// }
+		// defer conn.Close()
+		// openaiGrpcClient := gRPCChatgptClient.NewOpenaiGrpcClient(conn)
 		openApiKey := os.Getenv("OPEN_API_KEY")
 		app := app.NewApplication(rootCtx, cacheLambda, lineClientLambda, openApiKey)
 
